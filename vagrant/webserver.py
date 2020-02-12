@@ -23,7 +23,7 @@ class webserverHandler(BaseHTTPRequestHandler):
 				self.send_header('Content-type', 'text/html')
 				self.end_headers()
 				output = ""
-				output += "<html><body>"
+				output += "<html><body><a href='restaurant/new'>Make a New Restaurant</a></br></br>"
 				for restaurant in restaurants:
 					output += restaurant.name
 					output += "</br>"
