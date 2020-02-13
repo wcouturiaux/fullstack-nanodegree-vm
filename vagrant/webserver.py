@@ -33,6 +33,19 @@ class webserverHandler(BaseHTTPRequestHandler):
 				self.wfile.write(output)
 				return
 
+			if self.path.endswith("/new"):
+				self.send_response(200)
+				self.send_header('Content-type', 'text/html')
+				self.end_headers()
+				output = ""
+				output += "<html><body><h1>Create a New Restaurant</h1></br></br>"
+				output += '''<form method='POST' enctype='multipart/form-data' action='/restaurants'><h2>Enter Restaurant Name\
+							</h2><input name="restaurantName" type="text">&nbsp<input type="submit" value="Submit"></form>'''
+
+				output += "</body></html>"
+				self.wfile.write(output)
+				return
+
 			if self.path.endswith("/hello"):
 				self.send_response(200)
 				self.send_header('Content-type', 'text/html')
@@ -40,7 +53,8 @@ class webserverHandler(BaseHTTPRequestHandler):
 
 				output = ""
 				output += "<html><body>Hello!</body></html>"
-				output += '''<form method='POST' enctype='multipart/form-data' action='/hello'><h2>What would you like me to say?</h2><input name="message" type="text" ><input type="submit" value="Submit"> </form>'''
+				output += '''<form method='POST' enctype='multipart/form-data' action='/hello'><h2>What would you like me to say?\
+							</h2><input name="message" type="text"><input type="submit" value="Submit"> </form>'''
 				self.wfile.write(output)
 				print output
 				return
@@ -60,6 +74,8 @@ class webserverHandler(BaseHTTPRequestHandler):
 
 		except IOError:
 			self.send_error(404, "File Not Found %s" % self.path)
+
+
 	def do_POST(self):
 		try:
 			self.send_response(301)
