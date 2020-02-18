@@ -75,16 +75,20 @@ class webserverHandler(BaseHTTPRequestHandler):
 				return
 
 			if self.path.endswith("/edit"):
-				self.send_response(200)
-				self.send_header('Content-type', 'text/html')
-				self.end_headers()
-				output = ""
-				output += "<html><body>"
-				output += "<h1>Rename Restaurant</h1></br></br>"
-				output += "<form method='POST' enctype='multipart/form-data' action='/edit'>\
-							<input name='renamedRestaurant' type='text'>&nbsp<input type='submit' value='Submit'></form>"
+				restaurantIdPath = self.path.split("/")[2]
+				restaurantToEdit = session.query(Restaurant).filter_by(id=restaurantIdPath).one()
+				if restaurantToEdit != []:
+					self.send_response(200)
+					self.send_header('Content-type', 'text/html')
+					self.end_headers()
+					output = ""
+					output += "<html><body>"
+					output += "<h1>Rename %s </h1> </br></br>" %restaurantToEdit.name
+					output += "<form method='POST' enctype='multipart/form-data' action='/restaurants/%s/edit'>\
+								<input name='renamedRestaurant' type='text'>&nbsp<input type='submit' value='Submit'></form>"\
+								% restaurantIdPath
 
-				output += "</body></html>"
+					output += "</body></html>"
 				self.wfile.write(output)
 				return
 
@@ -95,6 +99,24 @@ class webserverHandler(BaseHTTPRequestHandler):
 
 	def do_POST(self):
 		try:
+			if self.path.endswith("/edit"):
+				ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
+				if ctype == 'multipart/form-data':
+					fields = cgi.parse_multipart(self.rfile, pdict)
+					messagecontent = fields.get('renamedRestaurant')
+					restaurantIdPath = self.path.split("/")[2]
+					restaurantToEdit = session.query(Restaurant).filter_by(id=restaurantIdPath).one()
+
+					if restaurantToEdit != []:
+						restaurantToEdit.name = messagecontent[0]
+						session.add(restaurantToEdit)
+						session.commit()
+
+						self.send_response(301)
+						self.send_header('Content-type', 'text/html')
+						self.send_header('Location', '/restaurants')
+						self.end_headers()
+
 			if self.path.endswith("/restaurants/new"):
 				ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
 				if ctype == 'multipart/form-data':
