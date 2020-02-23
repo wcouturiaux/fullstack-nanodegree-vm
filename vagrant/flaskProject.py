@@ -24,11 +24,11 @@ def newMenuItem(restaurant_id):
 	return "page to create a new menu item."
 
 @app.route('/restaurants/<int:restaurant_id>/<int:item_id>/edit')
-def editMenuItem(restaurant_id,item_id):
+def editMenuItem(restaurant_id,menu_id):
 	return "page to edit a menu item."
 
 @app.route('/restaurants/<int:restaurant_id>/<int:item_id>/delete')
-def deleteMenuItem(restaurant_id,item_id):
+def deleteMenuItem(restaurant_id,menu_id):
 	return "page to delete a menu item."
 
 if __name__ == '__main__':
