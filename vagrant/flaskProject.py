@@ -64,6 +64,11 @@ def editMenuItem(restaurant_id,menu_id):
 		return render_template('editMenuItem.html', restaurant_id=restaurant_id,
 			menu_id=menu_id, i=editedItem)
 
+@app.route('/restaurants/JSON')
+def restaurantsJSON():
+	restaurants = session.query(Restaurant).all()
+	return jsonify(Restaurants=[i.serialize for i in restaurants])
+
 @app.route('/restaurants/<int:restaurant_id>/menu/JSON')
 def restaurantMenuJSON(restaurant_id):
 	restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
